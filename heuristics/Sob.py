@@ -10,6 +10,7 @@ class Sob(Heuristic):
         # super().__init__(final_state, size)
         self.euclidean = Euclidean(final_state, size)
         self.manhattan = Manhattan(final_state, size)
+        self.name = 'Sob'
 
     def __call__(self, node):
         return node.depth + (self.euclidean(node) + self.manhattan(node)) / 2

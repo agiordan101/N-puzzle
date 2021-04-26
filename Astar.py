@@ -138,7 +138,7 @@ class Astar:
             'path_depth': self.path_depth,
             'time_complexity': self.time_complexity,
             'size_complexity': self.size_complexity,
-            'heuristic': self.heuristic_func,
+            'heuristic': self.heuristic_func.name,
             'path': self.path,
         }
     

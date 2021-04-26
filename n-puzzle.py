@@ -28,6 +28,9 @@ if __name__ == "__main__":
     print(f"time_complexity: {[log['time_complexity'] for log in logs]}")
     print(f"size_complexity: {[log['size_complexity'][-1] for log in logs]}")
     
-    for log in logs:
-        plt.plot(range(log['time_complexity']), log['size_complexity'])
-    plt.show()
+    # subplot(2, 2)
+    # lol = []
+    # for log in logs:
+    #     lol.append(plt.plot(range(log['time_complexity']), log['size_complexity']))
+    # plt.legend(handles=[lol[0], lol[1], lol[2]])
+    # plt.show()

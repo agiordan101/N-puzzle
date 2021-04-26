@@ -4,7 +4,7 @@ class Euclidean(Heuristic):
 
     def __init__(self, final_state, size):
         super().__init__(final_state, size)
-        pass
+        self.name = 'Euclidean'
 
     def __call__(self, node):
         self.tmp_state = node.state

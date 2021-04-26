@@ -4,7 +4,7 @@ class Manhattan(Heuristic):
 
     def __init__(self, final_state, size):
         super().__init__(final_state, size)
-        pass
+        self.name = 'Manhattan'
 
     def __call__(self, node):
         # score = 0
