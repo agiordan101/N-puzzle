@@ -3,30 +3,48 @@ from heuristics.Euclidean import Euclidean
 from heuristics.Sob import Sob
 from Astar import Astar
 from Node import Node
+from Parser import Parser
+
+from Taquin import Taquin
 
 import matplotlib.pyplot as plt
+import sys
+import argparse
+
+heuristic_func = {
+    "euclidean": Euclidean,
+    "manhattan": Manhattan,
+    "sob": Sob
+}
+
 
 if __name__ == "__main__":
 
-    # initial_state = [13, 12, 4, 1, 3, 11, 14, 10, 15, 7, 2, 0, 8, 6, 5, 9]
-    initial_state = [2, 5, 0, 7, 4, 8, 6, 1, 3]
+    arg_parser = argparse.ArgumentParser()
+    arg_parser.add_argument("-heuristic", help="heuristic function", default="euclidean", choices=["euclidean", "manhattan", "sob"])
+    arg_parser.add_argument("-file", help="input file here")
+    arg_parser.add_argument("-size", type=int, help="board size", default=3)
+    args = arg_parser.parse_args()
 
-    heuristics = [Sob, Manhattan, Euclidean]
-    # heuristics = [Manhattan]
-    # heuristics = [Euclidean]
-    # heuristics = [Sob]
-    logs = []
-    for heuristic in heuristics:
-        astar = Astar(initial_state, heuristic_func=heuristic)
-        astar.search()
-        logs.append(astar.get_logs())
-        # astar.print_graph()
-        # print(logs)
+    parser = Parser(args)
+
+    taquin = Taquin(parser.state)
+    if not taquin.is_solvable():
+        print("Error: Taquin is not solvable !")
+        exit(0)
+
+    astar = Astar(taquin.initial_state, taquin.final_state, heuristic_func=heuristic_func[args.heuristic])
+    astar.search()
+    
+    logs = [astar.get_logs()]
+    # astar.print_graph()
     
     print(f"path_depth: {[log['heuristic'] for log in logs]}")
     print(f"path_depth: {[log['path_depth'] for log in logs]}")
     print(f"time_complexity: {[log['time_complexity'] for log in logs]}")
     print(f"size_complexity: {[log['size_complexity'][-1] for log in logs]}")
+
+    # print(f"Path: {logs[0]['path']}")
     
     # subplot(2, 2)
     # lol = []
