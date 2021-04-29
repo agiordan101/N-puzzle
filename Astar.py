@@ -1,9 +1,10 @@
 from heuristics.Euclidean import Euclidean
 from Node import Node
+from RBTree import RBTree
+
 from math import sqrt
 
 import time
-import matplotlib.pyplot as plt
 
 class Astar:
 
@@ -32,6 +33,8 @@ class Astar:
 
         self.opened.append(Node(self.initial_state, self.heuristic_func))
 
+        self.tree = RBTree(self.opened[0])
+
     def __str__(self):
         return f"Opened: {self.opened}\nclosed: {self.closed}\n"
 
@@ -46,13 +49,45 @@ class Astar:
         # if node.depth == 2:
         #     exit(0)
 
+    # def search(self):
+
+    #     self.search_begin =< time.time()
+    #     self.time_complexity = 0
+    #     while self.opened and not self.win:
+
+    #         node = self.opened.pop(0)
+
+    #         if node.state == self.final_state:
+    #             self.path_depth = node.depth
+    #             self.path = node.backward()
+    #             self.search_end = time.time()
+    #             return self.get_logs()
+
+    #         for neighbour in node.neighbours():
+    #             # if not (neighbour in self.closed and neighbour in self.opened):
+    #             if not(any([neighbour.state == n.state for n in self.opened]) or
+    #                     any([neighbour.state == n.state for n in self.closed])):
+
+    #                 # print(f"depth {neighbour.depth}:\n{neighbour.state}")
+    #                 self.append_sort(neighbour)
+    #                 # next_node = Node(neighbour, self.heuristic_func, node.depth + 1, parent=node)
+    #                 # self.opened.append(next_node)
+    #                 # self.append_sort(next_node)
+
+    #         self.closed.append(node)
+    #         self.time_complexity += 1
+    #         self.size_complexity.append(len(self.opened) + len(self.closed))
+    #         self.best_heuristic.append(self.opened[0].heuristic)
+    #         print(f"depth: {self.time_complexity}\t-- size_complexity: {self.size_complexity[-1]}")
+        
     def search(self):
 
         self.search_begin = time.time()
+        self.search_begin <= time.time()
         self.time_complexity = 0
         while self.opened and not self.win:
 
-            node = self.opened.pop(0)
+            # node = self.opened.pop(0)
 
             if node.state == self.final_state:
                 self.path_depth = node.depth
@@ -66,11 +101,15 @@ class Astar:
                         any([neighbour.state == n.state for n in self.closed])):
 
                     # print(f"depth {neighbour.depth}:\n{neighbour.state}")
-                    self.append_sort(neighbour)
-                    # next_node = Node(neighbour, self.heuristic_func, node.depth + 1, parent=node)
+                    
+                    # INSERT HERE
+                    next_node = Node(neighbour, self.heuristic_func, node.depth + 1, parent=node)
+                    self.tree.insert(next_node)
+                    
+                    # self.append_sort(neighbour)
                     # self.opened.append(next_node)
                     # self.append_sort(next_node)
-
+            exit(0)
             self.closed.append(node)
             self.time_complexity += 1
             self.size_complexity.append(len(self.opened) + len(self.closed))

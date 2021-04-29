@@ -11,6 +11,11 @@ class Node:
 
         # print(heuristic_func)
         self.parent = parent
+        self.color = None
+
+        self.left = None
+        self.right = None
+
         self.state = state
         self.depth = parent.depth + 1 if parent else 0
         self.size = int(sqrt(len(state)))
@@ -30,31 +35,7 @@ class Node:
 
     def hash(self):
         return str(self.state)
-
-    # def neighbours(self):
-    #     # [('0' et 'x'), ...]
-    #     # list comprehension dessus
-    #     neighbours = []
-    #     index = self.state.index(0)
-    #     y, x = index / self.size, index % self.size
-
-    #     if x - 1 >= 0:
-    #         move = self.state[:index] + self.state[index-1] + self.state[index+1:]
-    #         neighbours.append(move[:index-1] + '0' + move[index:])
-
-    #     if x + 1 < self.size:
-    #         move = self.state[:index] + self.state[index+1] + self.state[index+1:]
-    #         neighbours.append(move[:index+1] + '0' + move[index+2:])
-
-    #     if y - 1 >= 0:
-    #         move = self.state[:index] + self.state[index-self.size] + self.state[index+1:]
-    #         neighbours.append(move[:index-self.size] + '0' + move[index-self.size+1:])
-    #     if y + 1 < self.size:
-    #         move = self.state[:index] + self.state[index+self.size] + self.state[index+1:]
-    #         neighbours.append(move[:index+self.size] + '0' + move[index+self.size+1:])
-
-    #     return neighbours
-        
+ 
     def neighbours(self):
 
         index = self.state.index(0)
