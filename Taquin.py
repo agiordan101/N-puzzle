@@ -11,6 +11,7 @@ class Taquin:
 
 	def generate_random(self, max_shuffle=random.randint(100, 1000)):
 
+		# Start with final state to generate valid Taquin
 		state = self.final_state.copy()
 		i = 0
 
@@ -19,6 +20,7 @@ class Taquin:
 			
 			y, x = index / self.size, index % self.size
 
+			# neighbours of '0': list of (exist?, delta index)
 			neighbours = [
 				(x - 1 >= 0, -1),
 				(x + 1 < self.size, +1),
@@ -26,11 +28,12 @@ class Taquin:
 				(y + 1 < self.size, +self.size),
 			]
 
+			# select randomly one valid neightboor
 			exist = False
-
 			while not exist:
 				exist, di = neighbours[random.randint(0, 3)]	
-			
+
+			# Swap
 			state[index] = state[index + di]
 			state[index + di] = 0
 
@@ -41,6 +44,7 @@ class Taquin:
 
 	def generate_final(self):
 
+		# final_state = [0] * (self.size * self.size)
 		final_state = [0 for i in range(self.size * self.size)]
 		x, y = 0, 0
 		n = self.size

@@ -7,6 +7,10 @@ class Heuristic(metaclass=ABCMeta):
         self.size = size
         self.square_size = size * size
 
+    def __call__(self, node):
+        self.tmp_state = node.state
+        return sum([self.compute(value) for value in range(self.square_size)])
+
     @abstractmethod
-    def __call__(self):
+    def compute(self):
         pass

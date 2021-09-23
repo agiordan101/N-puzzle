@@ -1,25 +1,28 @@
+from Node import Node
+
 BLACK = True
 RED = False
 
 class RBTree:
 
+    def __init__(self, root: Node):
 
-    def __init__(self, root):
+        print(f"RBTree init, root=\n{root}heuristic={root.heuristic}")
         self.root = root
         self.root.color = BLACK
 
     def search(self):
         pass
 
-    def rotate_right(node, parent, gparent):
-        pass
+    # def rotate_right(node, parent: Node, gparent: Node):
+    #     pass
 
-    def balance_red_uncle(node, parent, gparent, uncle):
+    def balance_red_uncle(self, node, parent, gparent, uncle):
         parent.color = BLACK
         uncle.color = BLACK
         gparent.color = RED
 
-    def balance_black_uncle_right_line(node, parent, gparent, uncle):
+    def balance_black_uncle_right_line(self, node, parent, gparent, uncle):
         
         gparent.parent = parent
         gparent.right = parent.left
@@ -28,7 +31,7 @@ class RBTree:
         parent.color = BLACK
         gparent.color = RED
 
-    def balance_black_uncle_left_line(node, parent, gparent, uncle):
+    def balance_black_uncle_left_line(self, node, parent, gparent, uncle):
         
         gparent.parent = parent
         gparent.left = parent.right
@@ -37,26 +40,26 @@ class RBTree:
         parent.color = BLACK
         gparent.color = RED
 
-    def balance_black_uncle_left_triangle(node, parent, gparent, uncle):
+    def balance_black_uncle_left_triangle(self, node, parent, gparent, uncle):
         
         gparent.left = node
         node.left = parent
         node.parent = gparent
         parent.parent = node
 
-    def balance_black_uncle_right_triangle(node, parent, gparent, uncle):
+    def balance_black_uncle_right_triangle(self, node, parent, gparent, uncle):
         
         gparent.right = node
         node.right = parent
         node.parent = gparent
         parent.parent = node
 
-    def balance_tree(self, node, parent, gparent, uncle):
+    def balance_tree(self, node: Node, parent: Node, gparent: Node, uncle: Node):
 
         if self.root == RED:
             self.root = BLACK
         
-        elif uncle.color == RED:
+        elif uncle and uncle.color == RED:
             self.balance_red_uncle(node, parent, gparent, uncle)
 
         else:
@@ -72,22 +75,46 @@ class RBTree:
                 self.balance_black_uncle_right_triangle(node, parent, gparent, uncle)
 
 
-    def insert(self, node):
+    def insert(self, node: Node):
         node.color = RED
+        parent = None
         current_node = self.root
 
-        while current_node.left or current_node.right:
+        # print(f"\nRoot node {self.root}")
+        print(f"Insert node {node.heuristic}:\n{node}")
 
-            if current_node.heuristic > node.heuristic:
-                current_node = current_node.left
-            else:
-                current_node = current_node.right
+        # SEARCH
+        # Go deeper if the child needed exist, in respect of heuristic
+        while (current_node.heuristic > node.heuristic and
+                current_node.left) or (current_node.right and
+                current_node.heuristic < node.heuristic):
+            current_node = current_node.left if node.heuristic < current_node.heuristic else current_node.right
 
+        # while current_node.left or current_node.right:
+        #     parent = current_node
+        #     if current_node.heuristic > node.heuristic:
+        #         current_node = current_node.left
+        #     else:
+        #         current_node = current_node.right
+
+        # INSERT
+        node.parent = current_node
         if current_node.heuristic > node.heuristic:
+            print(f"Insert left : {node.heuristic} < {current_node.heuristic}")
             current_node.left = node
         else:
+            print(f"Insert right : {current_node.heuristic} < {node.heuristic}")
             current_node.right = node
-            
+
+        print(f"current_node :\n{current_node}")
+        print(f"current_node parent :\n{current_node.parent}")
+
+        # BALANCE
         gparent = current_node.parent
-        uncle = gparent.left if gparent.right == current_node else gparent.right
-        self.balance_tree(node, current_node, gparent, uncle)
+        if gparent:
+            uncle = gparent.left if gparent.right == current_node else gparent.right
+            self.balance_tree(node, current_node, gparent, uncle)
+
+
+    def has_state(self, node: Node):
+        pass

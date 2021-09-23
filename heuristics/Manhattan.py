@@ -6,18 +6,9 @@ class Manhattan(Heuristic):
         super().__init__(final_state, size)
         self.name = 'Manhattan'
 
-    def __call__(self, node):
-        # score = 0
-        # self.tmp_state = node.state
-        # for value in square_size:
-        #     score += self.compute_manhattan(value)
-        # return score
-        self.tmp_state = node.state
-        return node.depth + sum([self.compute_manhattan(value) for value in range(self.square_size)])
-
-    def compute_manhattan(self, value):
+    def compute(self, value):
 
         current_index = self.tmp_state.index(value)
         final_index = self.final_state.index(value)
-
-        return abs((current_index / self.size) - (final_index / self.size)) + abs((current_index % self.size) - (final_index % self.size))
+        return (abs(int(current_index / self.size) - int(final_index / self.size)) +
+                abs((current_index % self.size) - (final_index % self.size)))

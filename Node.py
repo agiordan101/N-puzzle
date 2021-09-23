@@ -2,41 +2,32 @@ from math import sqrt
 
 class Node:
 
-    state = []
-    heuristic = None
-    parent = None
-    # childs = None
+    def __init__(self, state, search_strategy, parent=None):
 
-    def __init__(self, state, heuristic_func, parent=None):
-
-        # print(heuristic_func)
-        self.parent = parent
-        self.color = None
-
-        self.left = None
-        self.right = None
+        # self.color = None
+        # self.left = None    #Red black tree
+        # self.right = None   #Red black tree
 
         self.state = state
-        self.depth = parent.depth + 1 if parent else 0
+        self.state_id = str(state)
         self.size = int(sqrt(len(state)))
-        # if self.depth == 2:
-        #     exit(0)
-        self.heuristic_func = heuristic_func
-        self.heuristic = heuristic_func(self)
+        self.search_strategy = search_strategy
+        self(parent)
 
-    def __call__(self):
-        # if self.heuristic is None:
-        #     self.heuristic = self.heuristic_func()
-        # return self.heuristic
-        pass
+    def __call__(self, parent):
+        # node.depth is acting like cost function, c(n) = depth
+        self.parent = parent
+        self.depth = parent.depth + 1 if parent else 0 # Depth is different than time_complexity
+        self.heuristic = self.search_strategy(self)
 
     def __str__(self):
         return ''.join([f"{['-' if c == 0 else c for c in self.state[k*self.size:(k+1)*self.size]]}\n" for k in range(self.size)])
 
+
     def hash(self):
         return str(self.state)
- 
-    def neighbours(self):
+
+    def neighbours_state(self):
 
         index = self.state.index(0)
         y, x = index / self.size, index % self.size
@@ -51,7 +42,8 @@ class Node:
                 state = self.state.copy()
                 state[index] = state[index + di]
                 state[index + di] = 0
-                yield Node(state, self.heuristic_func, self)    
+                # yield Node(state, self.heuristic_func, self)
+                yield state
     
     def backward(self, log=""):
         if self.parent:

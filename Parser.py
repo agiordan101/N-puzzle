@@ -1,7 +1,7 @@
 class Parser:
 
 	def __init__(self, args):
-		
+
 		if args.file:
 			self.size = None
 			self.state = []
@@ -17,11 +17,11 @@ class Parser:
 
 		for line in lines:
 			epured = line.split('#')
-			
+			print(epured)
+
 			if len(epured) > 2:
 				print("Error: Only one comment maximum per line")
 				exit(0)
-
 			
 			epured = epured[0]
 			
@@ -33,7 +33,6 @@ class Parser:
 						print("Error: Board must be a square")
 						exit(0)
 
-					
 					self.state.extend([int(v) for v in values])
 				
 				else:
