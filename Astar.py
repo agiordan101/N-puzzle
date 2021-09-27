@@ -55,7 +55,7 @@ class Astar:
             self.data.close(node)
 
             self.time_complexity += 1
-            self.size_complexity.append(len(self.data.opened_sort) + len(self.data.closed))
+            self.size_complexity.append(self.data.get_size_complexity())
             self.best_heuristic.append(self.data.opened_sort[0].heuristic)
             if not self.time_complexity % 1000:
                 print(f"time_complexity: {self.time_complexity}\t-- size_complexity: {self.size_complexity[-1]}\t-- depth {node.depth}\t-- pop h={node.heuristic}")

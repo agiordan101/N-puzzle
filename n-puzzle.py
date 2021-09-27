@@ -59,18 +59,26 @@ if __name__ == "__main__":
         print("Error: Taquin is not solvable !")
         exit(0)
 
-    heuristic = heuristics[args.heuristic](taquin.final_state, parser.size)
+    class_heuristic = heuristics[args.heuristic]
+    print(f"class_heuristic: {class_heuristic}")
+    heuristic = class_heuristic(taquin.final_state, parser.size)
+    # heuristic = heuristics[args.heuristic](taquin.final_state, parser.size)
     search_strategy = strategies[args.strategy](heuristic)
     logs = []
     n_astar = 1
     for i in range(n_astar):
-        astar = Astar(taquin.initial_state, taquin.final_state, search_strategy, beam_search=False)
+        astar = Astar(
+            taquin.initial_state,
+            taquin.final_state,
+            search_strategy,
+            beam_search=False
+        )
         astar.search()
 
         logs.append(astar.get_logs())
         # astar.print_graph()
 
-        print(logs[-1])
+        # print(logs[-1])
 
     # print(f"Path:\n{logs[0]['path']}")
 

@@ -10,6 +10,7 @@ class Node:
 
         self.state = state
         self.state_id = str(state)
+        self.state_id_len = len(self.state_id)
         self.size = int(sqrt(len(state)))
         self.search_strategy = search_strategy
         self(parent)

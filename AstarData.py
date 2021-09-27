@@ -5,8 +5,8 @@ class AstarData:
         self.open = self.beam_search_open if beam_search else self.just_open
         self.opened = {node.state_id: node}
         self.opened_sort = [node]
-        self.closed = []
-        self.closedstr = "
+        self.closedstr = ""
+        self.state_id_len = node.state_id_len
 
     def get_node(self):
         del self.opened[self.opened_sort[0].state_id]
@@ -38,20 +38,11 @@ class AstarData:
             self.opened[state_id](parent)
 
     def close(self, node):
-        self.closed.append(node.state_id)
-
-    def is_closed(self, state_id):
-        return state_id in self.closed
-"""
-    def close(self, node):
         self.closedstr += node.state_id
        
     def is_closed(self, state_id):
+        # print(f"self.closedstr: {self.closedstr.find(state_id)}")
         return self.closedstr.find(state_id) != -1
-"""
-    
-    
-    
-    
-    
-    
+
+    def get_size_complexity(self):
+        return len(self.opened_sort) + len(self.closedstr) / self.state_id_len
