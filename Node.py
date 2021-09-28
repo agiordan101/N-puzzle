@@ -4,10 +4,6 @@ class Node:
 
     def __init__(self, state, search_strategy, parent=None):
 
-        # self.color = None
-        # self.left = None    #Red black tree
-        # self.right = None   #Red black tree
-
         self.state = state
         self.state_id = str(state)
         self.state_id_len = len(self.state_id)

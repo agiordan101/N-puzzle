@@ -9,7 +9,8 @@ class Heuristic(metaclass=ABCMeta):
 
     def __call__(self, node):
         self.tmp_state = node.state
-        return sum([self.compute(value) for value in range(self.square_size)])
+        self.last_heuristic = sum(self.compute(value) for value in range(self.square_size))
+        return self.last_heuristic
 
     @abstractmethod
     def compute(self):

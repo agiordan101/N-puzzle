@@ -7,13 +7,16 @@ class AstarData:
         self.opened_sort = [node]
         self.closedstr = ""
         self.state_id_len = node.state_id_len
+        if beam_search:
+            self.max_length_opened = pow(node.size, 5)
+            print(f"self.max_length_opened: {self.max_length_opened}")
 
     def get_node(self):
         del self.opened[self.opened_sort[0].state_id]
         return self.opened_sort.pop(0)
 
     def beam_search_open(self, node):
-        if len(self.opened_sort) < 500:
+        if len(self.opened_sort) < self.max_length_opened:
             self.just_open(node)
         else:
             if node.heuristic < self.opened_sort[-1].heuristic:

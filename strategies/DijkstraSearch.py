@@ -7,4 +7,4 @@ class DijkstraSearch(Strategy):
         self.name = "DijkstraSearch"
 
     def __call__(self, node):
-        return 0
+        return node.depth

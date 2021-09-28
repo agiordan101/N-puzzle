@@ -13,27 +13,36 @@ class Parser:
 
 	def parse_file(self, file):
 
-		lines = open(file).read().split('\n')
+		try:
+			lines = open(file).read().split('\n')
+		except Exception as error:
+			print(f"[PARSER ERROR] Open failed:\n{error}")
 
-		for line in lines:
-			epured = line.split('#')
-			print(epured)
+		try:
+			for line in lines:
+				epured = line.split('#')
+				# print(epured)
 
-			if len(epured) > 2:
-				print("Error: Only one comment maximum per line")
-				exit(0)
-			
-			epured = epured[0]
-			
-			if epured:
-
-				if self.size:
-					values = [value for value in epured.split(' ') if value.isnumeric()]
-					if self.size != len(values):
-						print("Error: Board must be a square")
-						exit(0)
-
-					self.state.extend([int(v) for v in values])
+				if len(epured) > 2:
+					print("Error: Only one comment maximum per line")
+					exit(0)
 				
-				else:
-					self.size = int(epured)
+				epured = epured[0]
+				
+				if epured:
+
+					if self.size:
+						values = [value for value in epured.split(' ') if value.isnumeric()]
+						if self.size != len(values):
+							print("Error: Board must be a square")
+							exit(0)
+
+						self.state.extend(int(v) for v in values)
+					
+					else:
+						self.size = int(epured)
+
+			print(f"Parser board state: {self.state}")
+
+		except Exception as error:
+			print(f"[PARSER ERROR] Parsing failed:\n{error}")

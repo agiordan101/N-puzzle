@@ -14,18 +14,19 @@ from Taquin import Taquin
 
 import sys
 import argparse
+import json
 
 heuristics = {
     "euclidean": Euclidean,
-    "manhattan": Manhattan,
-    "sob": Sob
+    "sob": Sob,
+    "manhattan": Manhattan
 }
 
 strategies = {
-    "DijkstraSearch": DijkstraSearch,
-    "UniformCost": UniformCost,
+    "AStarSearch": AStarSearch,
     "GreedySearch": GreedySearch,
-    "AStarSearch": AStarSearch
+    "UniformCost": UniformCost,
+    "DijkstraSearch": DijkstraSearch
 }
 
 """
@@ -33,62 +34,104 @@ strategies = {
     Close list ->   Just a list
                     Try with 10-tree
 
-    Dijkstra ->     Looking all paths
+    Dijkstra ->     Looking all paths (Based on depth)
     A* ->           Care about path cost and heuristic to open a node
 
     Greedy search ->Just care about heuristic
-    uniform cost -> Just care about path cost
+    Uniform cost -> Just care about path cost (Cost between nodes are 1, so in this case it's like Dijkstra algorithm)
 
-    beam search ->  Open list length is 500
+    beam search ->  Open list length is a fixed value
 """
+
+def solve(taquin, strategy_class, heuristic_class, beam_search, print_path):
+
+    try:
+        try:
+            heuristic = heuristic_class(taquin.final_state, taquin.size)
+            strategy = strategy_class(heuristic)
+        except Exception as error:
+            print(f"[MAIN ERROR] heuristic or strategy is invalid:\nheuristic={args.heuristic}\tstrategy={args.strategy}\tTraceback:\n{error}")
+            exit(0)
+
+        # astar, logs = solve(taquin, strategy, args.beam_search)
+        astar = Astar(
+            taquin.initial_state,
+            taquin.final_state,
+            strategy,
+            beam_search=beam_search
+        )
+        logs = astar.search()
+
+        if print_path:
+            print(f"path:\n{logs['path']}")
+
+        del logs['path']
+        print(f"ASTAR end, logs:\n", json.dumps(logs, indent=4))
+
+        return astar, logs
+
+    except Exception as error:
+        print(f"[BENCHMARK ERROR] Astar of heuristic {heuristic.name} has failed:\n{error}")
+        exit(0)
+
+
 
 if __name__ == "__main__":
 
     arg_parser = argparse.ArgumentParser()
-    arg_parser.add_argument("-heuristic", help="heuristic function", default="euclidean", choices=heuristics.keys())
-    arg_parser.add_argument("-strategy", help="strategy function", default="AStarSearch", choices=strategies.keys())
+    arg_parser.add_argument("-heuristic", default="euclidean", choices=heuristics.keys(), help="heuristic function")
+    arg_parser.add_argument("-strategy", default="AStarSearch", choices=strategies.keys(), help="strategy function")
     arg_parser.add_argument("-file", help="input file here")
-    arg_parser.add_argument("-size", type=int, help="board size", default=3)
+    arg_parser.add_argument("-size", type=int, default=3, help="board size")
+    # arg_parser.add_argument("--benchmark", dest='benchmark', action='store_true', default=False, help="benchmark mode (for heuristics)")
+    arg_parser.add_argument("--benchmark", dest='benchmark', choices=["heuristics", "strategies"], default=False, help="benchmark mode, for heuristics or strategies")
+    arg_parser.add_argument("--path", dest='path', action='store_true', default=False, help="path verbose")
+    arg_parser.add_argument("--beam", dest='beam_search', action='store_true', default=False, help="beam search optimization (Affect length of Astar opened list)")
     args = arg_parser.parse_args()
 
     parser = Parser(args)
-    print(parser.state)
 
+    # Generate Taquin
     taquin = Taquin(parser.state)
     if not taquin.is_solvable():
-        print("Error: Taquin is not solvable !")
+        print("\nError: Taquin is not solvable !")
         exit(0)
 
-    class_heuristic = heuristics[args.heuristic]
-    print(f"class_heuristic: {class_heuristic}")
-    heuristic = class_heuristic(taquin.final_state, parser.size)
-    # heuristic = heuristics[args.heuristic](taquin.final_state, parser.size)
-    search_strategy = strategies[args.strategy](heuristic)
-    logs = []
-    n_astar = 1
-    for i in range(n_astar):
-        astar = Astar(
-            taquin.initial_state,
-            taquin.final_state,
-            search_strategy,
-            beam_search=False
-        )
-        astar.search()
 
-        logs.append(astar.get_logs())
-        # astar.print_graph()
+    if args.benchmark:
 
-        # print(logs[-1])
+        if args.benchmark == "heuristics":
+            for name, h_class in heuristics.items():
+                solve(taquin, strategies[args.strategy], h_class, args.beam_search, args.path)
 
-    # print(f"Path:\n{logs[0]['path']}")
+        elif args.benchmark == "strategies":
+            for name, s_class in strategies.items():
+                solve(taquin, s_class, heuristics[args.heuristic], args.beam_search, args.path)
 
-    print(f"Average of {n_astar} astar")
-    print(f"time (s): {sum([log['time (s)'] for log in logs]) / n_astar}")
-    print(f"path_depth: {sum([log['path_depth'] for log in logs]) / n_astar}")
-    print(f"time_complexity: {sum([log['time_complexity'] for log in logs]) / n_astar}")
-    print(f"size_complexity: {sum([log['size_complexity'][-1] for log in logs]) / n_astar}")
+    else:
+        astar, logs = solve(taquin, strategies[args.strategy], heuristics[args.heuristic], args.beam_search, args.path)
+        print(f"astar.best_heuristics: {astar.best_heuristic}")
+        astar.print_graph()
 
-    
+    # logs = []
+    # n_astar = 1
+    # for i in range(n_astar):
+    #     astar = Astar(
+    #         taquin.initial_state,
+    #         taquin.final_state,
+    #         strategy,
+    #         beam_search=True
+    #     )
+    #     astar.search()
+
+    #     logs.append(astar.get_logs())
+
+    # print(f"\nAverage of {n_astar} astar")
+    # print(f"time (s): {sum([log['time (s)'] for log in logs]) / n_astar}")
+    # print(f"path_depth: {sum([log['path_depth'] for log in logs]) / n_astar}")
+    # print(f"time_complexity: {sum([log['time_complexity'] for log in logs]) / n_astar}")
+    # print(f"size_complexity: {sum([log['size_complexity'][-1] for log in logs]) / n_astar}")
+
     # subplot(2, 2)
     # lol = []
     # for log in logs:

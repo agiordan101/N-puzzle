@@ -10,5 +10,6 @@ class Manhattan(Heuristic):
 
         current_index = self.tmp_state.index(value)
         final_index = self.final_state.index(value)
-        return (abs(int(current_index / self.size) - int(final_index / self.size)) +
-                abs((current_index % self.size) - (final_index % self.size)))
+        dx = abs((current_index % self.size) - (final_index % self.size))
+        dy = abs(int(current_index / self.size) - int(final_index / self.size))
+        return dx + dy
