@@ -37,14 +37,12 @@ class AstarData:
 
     def update_opened_node(self, state_id, parent):
         if self.opened[state_id].depth > parent.depth + 1:
-            # print(f"Update node depth {self.opened[state_id].depth} to {parent.depth + 1}")
             self.opened[state_id](parent)
 
     def close(self, node):
         self.closedstr += node.state_id
        
     def is_closed(self, state_id):
-        # print(f"self.closedstr: {self.closedstr.find(state_id)}")
         return self.closedstr.find(state_id) != -1
 
     def get_size_complexity(self):

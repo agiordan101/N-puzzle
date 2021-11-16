@@ -8,7 +8,6 @@ from heuristics.Sob import Sob
 from Astar import Astar
 from Node import Node
 from Parser import Parser
-from RBTree import RBTree
 
 from Taquin import Taquin
 
@@ -25,14 +24,13 @@ heuristics = {
 strategies = {
     "AStarSearch": AStarSearch,
     "GreedySearch": GreedySearch,
-    "UniformCost": UniformCost,
-    "DijkstraSearch": DijkstraSearch
+    # "UniformCost": UniformCost,
+    # "DijkstraSearch": DijkstraSearch
 }
 
 """
     Open list ->    priority queue & dict[state] = Node
-    Close list ->   Just a list
-                    Try with 10-tree
+    Close list ->   Just a concatenation of string
 
     Dijkstra ->     Looking all paths (Based on depth)
     A* ->           Care about path cost and heuristic to open a node
@@ -53,7 +51,6 @@ def solve(taquin, strategy_class, heuristic_class, beam_search, print_path):
             print(f"[MAIN ERROR] heuristic or strategy is invalid:\nheuristic={args.heuristic}\tstrategy={args.strategy}\tTraceback:\n{error}")
             exit(0)
 
-        # astar, logs = solve(taquin, strategy, args.beam_search)
         astar = Astar(
             taquin.initial_state,
             taquin.final_state,
@@ -92,7 +89,7 @@ if __name__ == "__main__":
     parser = Parser(args)
 
     # Generate Taquin
-    taquin = Taquin(parser.state)
+    taquin = Taquin(parser.state, parser.size)
     if not taquin.is_solvable():
         print("\nError: Taquin is not solvable !")
         exit(0)
@@ -112,29 +109,3 @@ if __name__ == "__main__":
         astar, logs = solve(taquin, strategies[args.strategy], heuristics[args.heuristic], args.beam_search, args.path)
         print(f"astar.best_heuristics: {astar.best_heuristic}")
         astar.print_graph()
-
-    # logs = []
-    # n_astar = 1
-    # for i in range(n_astar):
-    #     astar = Astar(
-    #         taquin.initial_state,
-    #         taquin.final_state,
-    #         strategy,
-    #         beam_search=True
-    #     )
-    #     astar.search()
-
-    #     logs.append(astar.get_logs())
-
-    # print(f"\nAverage of {n_astar} astar")
-    # print(f"time (s): {sum([log['time (s)'] for log in logs]) / n_astar}")
-    # print(f"path_depth: {sum([log['path_depth'] for log in logs]) / n_astar}")
-    # print(f"time_complexity: {sum([log['time_complexity'] for log in logs]) / n_astar}")
-    # print(f"size_complexity: {sum([log['size_complexity'][-1] for log in logs]) / n_astar}")
-
-    # subplot(2, 2)
-    # lol = []
-    # for log in logs:
-    #     lol.append(plt.plot(range(log['time_complexity']), log['size_complexity']))
-    # plt.legend(handles=[lol[0], lol[1], lol[2]])
-    # plt.show()

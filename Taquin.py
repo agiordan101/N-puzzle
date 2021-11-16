@@ -9,7 +9,7 @@ class Taquin:
 		self.final_state = self.generate_final()
 		self.initial_state = initial_state if initial_state else self.generate_random()
 
-	def generate_random(self, max_shuffle=random.randint(100, 1000)):
+	def generate_random(self, max_shuffle=random.randint(100, 500)):
 
 		# Start with final state to generate valid Taquin
 		state = self.final_state.copy()
@@ -115,8 +115,6 @@ class Taquin:
 			dzero = abs(izero % self.size - fzero % self.size) + abs(int(izero / self.size) - int(fzero / self.size))
 
 			moves = 0
-			# print(f"State init {moves}:\n{state}\n{self.final_state}")
-			# while self.final_state != state:
 			for i, v in enumerate(self.final_state):
 
 				index = state.index(v)
@@ -124,7 +122,6 @@ class Taquin:
 				if v != state[i]:
 					state[index] = state[i]
 					state[i] = v
-					# print(f"State {moves}:\n{state}\n{self.final_state}")
 					moves += 1
 
 				if self.final_state == state:

@@ -1,15 +1,10 @@
 from heuristics.Euclidean import Euclidean
 from Node import Node
-from RBTree import RBTree
 from AstarData import AstarData
 
 from math import sqrt
 
 import time
-# import matplotlib
-# matplotlib.use('TkCairo')
-# matplotlib.use('MacOSX')
-# import matplotlib.pyplot as plt
 
 import plotly.express as px
 from plotly.offline import plot
@@ -18,20 +13,25 @@ class Astar:
 
     def __init__(self, initial_state, final_state, search_strategy, beam_search=True):
 
-        print(f"\nASTAR init, strategy: {search_strategy.name}, heuristic: {search_strategy.heuristic_func.name}, beam_search: {beam_search}")
-        self.win = False
-        self.time_complexity = 0
-        self.size_complexity = []
-        self.best_heuristic = []
-        self.path = None
-        self.path_depth = 0
+        try:
+            print(f"\nASTAR init, strategy: {search_strategy.name}, heuristic: {search_strategy.heuristic_func.name}, beam_search: {beam_search}")
+            self.win = False
+            self.time_complexity = 0
+            self.size_complexity = []
+            self.best_heuristic = []
+            self.path = None
+            self.path_depth = 0
 
-        self.initial_state = initial_state
-        self.final_state = final_state
-        self.size = int(sqrt(len(initial_state)))
-        self.search_strategy = search_strategy
+            self.initial_state = initial_state
+            self.final_state = final_state
+            self.size = int(sqrt(len(initial_state)))
+            self.search_strategy = search_strategy
 
-        self.data = AstarData(Node(self.initial_state, search_strategy), beam_search=beam_search)
+            self.data = AstarData(Node(self.initial_state, search_strategy), beam_search=beam_search)
+
+        except Exception as error:
+            print(f"[ASTAR ERROR] Astar() constructor has failed:\n{error}")
+            exit(0)
 
     def search(self):
 
@@ -40,7 +40,6 @@ class Astar:
         while self.data.opened and not self.win:
 
             node = self.data.get_node()
-            # print(f"Pop h={node.heuristic}")
 
             if node.state == self.final_state:
                 self.search_end = time.time()
@@ -83,22 +82,6 @@ class Astar:
 
     def print_graph(self):
 
-        # fig, (ax1, ax2) = plt.subplots(1, 2)
-        # ax1.plot(range(self.time_complexity), self.size_complexity)
-        # ax1.set_title('Size complexity')
-        # ax2.plot(range(self.time_complexity), self.best_heuristic)
-        # ax2.set_title('Heuristic\'s node open')
-        # plt.show()
-
-        # fig = px.scatter(x=range(self.time_complexity), y=self.best_heuristic)
-        # fig.update_layout(
-        #     title="Astar",
-        #     xaxis_title="Time complexity",
-        #     yaxis_title="Heuristic\'s node open",
-        # )
-        # plot(fig)
-        
         fig = px.line(x=range(self.time_complexity), y=self.size_complexity, title='Size complexity & heuristic opened over time complexity')
         fig.add_scatter(x=list(range(self.time_complexity)), y=self.best_heuristic)
-        # fig.set_title("Astar logs")
         fig.show()
