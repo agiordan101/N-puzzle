@@ -1,6 +1,6 @@
 # N-puzzle
 
-The goal of this project is to solve the n-puzzle ("taquin" in French) game using the A* search algorithm or one of its variants.
+42 project of algorithmic branch -> The goal of this project is to solve the n-puzzle ("taquin" in French) game using the A* search algorithm or one of its variants.
 
 - 'Parser' object helps for parsing and cleaning data
 - 'Taquin' object simulates the n-puzzle game.
